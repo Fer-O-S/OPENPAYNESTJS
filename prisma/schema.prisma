@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 // Este es tu Prisma schema actualizado para usar Openpay
+// Schema mínimo para Openpay - Suscripciones y Pagos únicos
+// Schema original mejorado para manejar pagos únicos y suscripciones con Openpay
 
 generator client {
   provider = "prisma-client-js"
@@ -21,9 +23,10 @@ model Users {
   password String
   openpayCustomerId String? @unique // ID del cliente en Openpay
 
-  // Back-relations
-  orders   Orders[]
-  payments Payments[]
+ 
+  orders        Orders[]
+  payments      Payments[]
+  subscriptions Subscriptions[] // NUEVO: para suscripciones
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -44,15 +47,23 @@ model Products {
   description     String?
   price           Float
   currency        String
-  stock           Int?     @default(0) // Cantidad en inventario
+  stock           Int?     @default(0)
   active          Boolean  @default(true)
   imageUrl        String?
-  mode            String   @default("default") // Modo del producto
+  mode            String   @default("default")
+  
+  // NUEVO: Para suscripciones
+  type            ProductType @default(ONE_TIME) // ONE_TIME o SUBSCRIPTION
+  interval        String?     // "month", "year" (solo para suscripciones)
+  
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  // Relación con órdenes
+  openpayPlanId     String?   // ID del plan de Openpay para suscripciones
+
+  // Relaciones
   orders          Orders[]
+  subscriptions   Subscriptions[] // NUEVO: relación con suscripciones
 }
 
 model Orders {
@@ -83,11 +94,29 @@ model Orders {
   updatedAt DateTime @updatedAt
 }
 
+// NUEVO: Modelo para suscripciones
+model Subscriptions {
+  id        Int                @id @default(autoincrement())
+  userId    Int
+  productId Int
+  status    SubscriptionStatus @default(ACTIVE)
+  orderId  Int? // Relación opcional con Orders
+  
+  openpaySubscriptionId String?  @unique
+  currentPeriodEnd      DateTime
+  
+  user      Users    @relation(fields: [userId], references: [id])
+  product   Products @relation(fields: [productId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Payments {
   id Int @id @default(autoincrement())
 
-  orderId Int
-  order   Orders @relation(fields: [orderId], references: [id])
+  orderId Int?
+  order   Orders? @relation(fields: [orderId], references: [id])
 
   userId Int
   user   Users @relation(fields: [userId], references: [id])
@@ -97,13 +126,21 @@ model Payments {
   amount          Decimal       @db.Decimal(10, 2)
   currency        String        @default("mxn")
   status          PaymentStatus @default(PENDING)
-  receiptUrl      String? // URL del recibo de Openpay
+  receiptUrl      String?
+  subscriptionId  Int?     // <-- Relación opcional con Subscriptions
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-// Enums básicos
+// NUEVO: Enum para tipo de producto
+enum ProductType {
+  ONE_TIME
+  SUBSCRIPTION
+}
+
+// Enums básicos existentes
 enum OrderStatus {
   PENDING
   PAID
@@ -116,4 +153,11 @@ enum PaymentStatus {
   SUCCEEDED
   FAILED
   REFUNDED
+}
+
+// NUEVO: Enum para estados de suscripción
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
 }

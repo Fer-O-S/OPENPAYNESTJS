@@ -4,6 +4,8 @@ import { RegisterModule } from './apps/users/users.module';
 import { AuthModule } from './middlewares/auth/auth.module';
 import { FormModule } from './apps/form/form.module';
 import { OpenpayModule } from './utils/openpay/openpay.module';
+import { CheckoutModule } from './utils/checkout/checkout.module';
+import { WebhookModule } from './utils/webhook/webhook.module';
 
 @Module({
   imports: [
@@ -12,8 +14,8 @@ import { OpenpayModule } from './utils/openpay/openpay.module';
     AuthModule,
     FormModule,
     OpenpayModule,
-    // CheckoutModule,
-    // WebhookModule,
+    CheckoutModule,
+    WebhookModule,
   ],
   controllers: [],
   providers: [],

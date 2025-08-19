@@ -6,14 +6,16 @@ import { ProductDto } from './dto/product.dto';
 export class OpenpayController {
   constructor(private openpayService: OpenpayService) {}
 
-  @Post('createProduct')
+  // Crear productos de compra única
+  @Post('products')
   async createProduct(@Body() productDto: ProductDto) {
     return await this.openpayService.createProduct(productDto);
   }
 
-  @Get('text')
-  async gettext(text: string) {
-    return (text = 'Hello from Openpay Controller');
+  // Crear productos de suscripción
+  @Post('subscriptions')
+  async createSubscription(@Body() productDto: ProductDto) {
+    return await this.openpayService.createSubscriptionProduct(productDto);
   }
 
   @Get('dbProducts')

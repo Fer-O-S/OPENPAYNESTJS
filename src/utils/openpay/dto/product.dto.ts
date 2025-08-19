@@ -4,8 +4,11 @@ import {
   IsString,
   IsOptional,
   IsBoolean,
+  IsEnum,
+  IsIn,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ProductType } from '@prisma/client';
 
 export class ProductDto {
   @IsString()
@@ -47,4 +50,14 @@ export class ProductDto {
   @IsOptional()
   @ApiProperty({ example: true, required: false })
   active?: boolean;
+
+  @IsEnum(ProductType)
+  @IsOptional()
+  @ApiProperty()
+  type?: ProductType; // ONE_TIME | SUBSCRIPTION
+
+  @IsOptional()
+  @IsIn(['month', 'year'])
+  @ApiProperty()
+  interval?: string; // "month", "year"
 }
