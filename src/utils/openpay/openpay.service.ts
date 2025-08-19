@@ -22,7 +22,7 @@ export class OpenpayService {
         imageUrl: productDto.imageUrl || null,
         mode: productDto.mode || 'default', // Modo del producto (puedes ajustar según tus necesidades)
         active: productDto.active ?? true,
-        // openpayProductId: null, // Openpay no guarda productos, pero puedes dejar este campo para referencia futura
+        // openpayPlanId: null, // Se puede usar para almacenar el ID del plan de Openpay si es necesario
       },
     });
 
