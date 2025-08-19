@@ -75,7 +75,7 @@ export class CheckoutService {
       };
 
       openpayResponse = await new Promise((resolve, reject) => {
-        this.openpay.subscriptions.createForCustomer(
+        this.openpay.customers.subscriptions.create(
           createCheckoutDto.openpayCustomerId,
           subscriptionData,
           (error: any, subscription: any) => {

@@ -20,7 +20,7 @@ export class CheckoutController {
         message: result.message,
       };
     } catch (error) {
-      console.error(error); // <-- esto te mostrará el error en la terminal
+      console.error(error);
       return {
         success: false,
         error: error?.message || JSON.stringify(error), // <-- muestra el mensaje o el objeto completo
