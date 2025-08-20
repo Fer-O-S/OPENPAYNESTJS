@@ -7,15 +7,35 @@ export class OpenpayController {
   constructor(private openpayService: OpenpayService) {}
 
   // Crear productos de compra única
+
   @Post('products')
   async createProduct(@Body() productDto: ProductDto) {
-    return await this.openpayService.createProduct(productDto);
+    try {
+      return await this.openpayService.createProduct(productDto);
+    } catch (error) {
+      console.error('Error en createProduct:', error);
+      return {
+        success: false,
+        message: error.message || 'Error interno del servidor',
+        error: error,
+      };
+    }
   }
 
   // Crear productos de suscripción
+
   @Post('subscriptions')
   async createSubscription(@Body() productDto: ProductDto) {
-    return await this.openpayService.createSubscriptionProduct(productDto);
+    try {
+      return await this.openpayService.createSubscriptionProduct(productDto);
+    } catch (error) {
+      console.error('Error en createSubscription:', error);
+      return {
+        success: false,
+        message: error.message || 'Error interno del servidor',
+        error: error,
+      };
+    }
   }
 
   @Get('dbProducts')
