@@ -42,4 +42,9 @@ export class OpenpayController {
   async getProductsDB() {
     return await this.openpayService.getProductsDB();
   }
+
+  @Get('Psubscriptions')
+  async getSubscriptions() {
+    return await this.openpayService.getsuscription();
+  }
 }

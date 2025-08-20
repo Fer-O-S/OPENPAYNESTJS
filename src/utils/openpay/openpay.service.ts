@@ -143,4 +143,11 @@ export class OpenpayService {
     const productsDB = await this.prisma.products.findMany();
     return productsDB;
   } //getProductsDB
+
+  async getsuscription() {
+    const subscriptions = await this.prisma.products.findMany({
+      where: { type: ProductType.SUBSCRIPTION },
+    });
+    return subscriptions;
+  }
 }
